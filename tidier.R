@@ -36,10 +36,13 @@ d$outcome <- as.numeric(d$outcome)
 
 d %<>% #add outcome_status to this grouping as well
   mutate_if(is.character, funs(factor(.))) %>%
-  group_by(outcome_type, Number, `Program Label`, `Program Details`) %>%
-  mutate(i = row_number()) #%>%
-  #spread(outcome_status, outcome)
+  group_by(
+    outcome_type, outcome_status, Number, `Program Label`, `Program Details`) %>%
+  mutate(i = row_number()) %>%
+  spread(outcome_status, outcome) %>%
+  ungroup()
 
 
 d %>%
-  filter(Number == 1)
+  filter(Number == 1) %>%
+  select(-`Program Details`)
