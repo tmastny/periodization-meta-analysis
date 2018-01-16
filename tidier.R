@@ -23,7 +23,10 @@ d$`Other 1 pre` <- as.numeric(d$`Other 1 pre`)
 ## ---- gather_variables ----
 d %<>%
   gather(type, outcome, `LBM Pre`:`ES 1 vs. 3__4`) %>%
-  mutate(type = str_to_lower(type)) %>%
+  mutate(type = str_to_lower(type))
+
+## ---- split_columns ----
+d %<>%
   filter(
     (str_detect(type, ' pre') |
     str_detect(type, ' post') |
