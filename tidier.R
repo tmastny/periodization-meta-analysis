@@ -45,6 +45,14 @@ d %<>%
   mutate_if(is.character, funs(factor(.))) %>%
   group_by(
     outcome_type, outcome_measurements, Number, `Program Label`, `Program Details`) %>%
+  spread(outcome_measurements, outcome) %>%
+  ungroup()
+
+## ---- group_by_old -----
+d %<>% 
+  mutate_if(is.character, funs(factor(.))) %>%
+  group_by(
+    outcome_type, outcome_measurements, Number, `Program Label`, `Program Details`) %>%
   mutate(i = row_number()) %>%
   spread(outcome_measurements, outcome) %>%
   ungroup() %>%
