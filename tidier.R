@@ -33,7 +33,7 @@ d %<>%
     str_detect(type, ' sd')) &
     not(str_detect(type, "/"))) %>%
     separate(
-      type, c('outcome_type', 'outcome_status'), 
+      type, c('outcome_type', 'outcome_measurements'), 
       ' (?=(pre$|post$|sd$))')
 
 ## ---- remove_na -----
@@ -44,8 +44,8 @@ d$outcome <- as.numeric(d$outcome)
 d %<>% 
   mutate_if(is.character, funs(factor(.))) %>%
   group_by(
-    outcome_type, outcome_status, Number, `Program Label`, `Program Details`) %>%
+    outcome_type, outcome_measurements, Number, `Program Label`, `Program Details`) %>%
   mutate(i = row_number()) %>%
-  spread(outcome_status, outcome) %>%
+  spread(outcome_measurements, outcome) %>%
   ungroup() %>%
   select(-i)
