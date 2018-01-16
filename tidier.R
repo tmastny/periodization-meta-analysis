@@ -46,6 +46,3 @@ d %<>%
   spread(outcome_status, outcome) %>%
   ungroup() %>%
   select(-i)
-
-#test commit
-
