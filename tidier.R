@@ -40,8 +40,10 @@ d %<>%
 d <- d[complete.cases(d$outcome),]
 d$outcome <- as.numeric(d$outcome)
 
-## ---- group_by -----
+## ---- fix_data -----
 d <- d[-c(114, 115, 120, 121, 122, 123, 90, 91, 96, 97, 98, 99, 102, 103, 108, 109, 110, 111),]
+
+## ---- group_by -----
 d %<>% 
   mutate_if(is.character, funs(factor(.))) %>%
   group_by(
