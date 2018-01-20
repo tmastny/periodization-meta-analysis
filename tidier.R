@@ -33,9 +33,9 @@ d %<>%
     str_detect(type, ' post') |
     str_detect(type, ' sd')) &
     not(str_detect(type, "/"))) %>%
-    separate(
-      type, c('outcome_type', 'outcome_measurements'), 
-      ' (?=(pre$|post$|sd$))')
+  separate(
+    type, c('outcome_type', 'outcome_measurements'), 
+    ' (?=(pre$|post$|sd$))')
 
 ## ---- remove_na -----
 d <- d[complete.cases(d$outcome),]
