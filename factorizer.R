@@ -18,8 +18,10 @@ d %<>%
 # consistent with most of Greg's study exclusion
 d %<>%
   filter(Number != 1) %>%   # small sd, used body weight indices
-  filter(Number != 42) %>%  # studied seniors
-  filter(Number != 4)       # very small sd and treatment difference
+  filter(Number != 42)      # studied seniors
+
+d %<>% 
+  rename(weeks = `Length (weeks)`)
 
 d %<>%
   mutate(`Participants (training status)` = str_to_lower(`Participants (training status)`)) %>%
@@ -41,6 +43,11 @@ d %<>%
   mutate(block = if_else(
     (periodized == 1) & str_detect(`Program Label`, 'BP'), 1, 0)) %>%
   select(-`Program Label`, -`Program Details`)
+
+## ---- calculate_es ----
+d %<>%
+  mutate(effect_size = (post - pre)/sd) %>%
+  mutate(standard_error = sqrt(2/N + effect_size^2/(4*N)))
 
 write_csv(d, 'factorized_periodization.csv')
   
