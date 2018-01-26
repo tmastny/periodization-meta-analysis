@@ -49,6 +49,7 @@ d %<>%
   mutate(effect_size = (post - pre)/sd) %>%
   mutate(standard_error = sqrt(2/N + effect_size^2/(4*N)))
 
+## ---- save_csv ----
 write_csv(d, 'factorized_periodization.csv')
   
 
