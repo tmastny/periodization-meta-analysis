@@ -18,6 +18,7 @@ replicated_studies <- d %>%
     trained,
     standard_error = seq_range(standard_error, n = 50)
   )
+## ---- replicated_studies_exclude ----
 replicated_studies_exclude <- d %>%
   filter(Number != 4) %>%
   data_grid(
@@ -86,9 +87,9 @@ pp_check(
   nsamples = 500)
 
 replicated_studies_exclude %>%
-  mutate(effect_size = max(d$effect_size[d$Number != 4])) %>%
+  mutate(effect_size = mean(d$effect_size[d$Number != 4])) %>%
   pp_check(
-    full_model_exclude, type = 'stat', stat = 'max', 
+    full_model_exclude, type = 'stat', stat = 'mean', 
     nsamples = 500, allow_new_levels = TRUE, newdata = .)
 
 #' With the minimum, again the expected value seems spot on, but with much more
@@ -100,6 +101,10 @@ pp_check(
 #' similar results with the mean
 pp_check(
   full_model_exclude, type = 'stat', stat = 'mean', 
+  nsamples = 500)
+
+pp_check(
+  full_model_prior, type = 'stat', stat = 'mean', 
   nsamples = 500)
 
 #' Next we can compare exclusion to including prior information.
