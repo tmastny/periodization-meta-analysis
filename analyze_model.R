@@ -216,3 +216,171 @@ d %>%
 ## check Greg's result of trained people responding better to UP
 
 
+
+
+
+# Comparsion 1: Model with all data
+#               Model with all data, don't use study 4
+#               Model with all data, don't use study 4, but allow all variation
+full_model <- readRDS('full_model.rds')
+pp_check(full_model, type = 'stat', stat = 'max', nsamples = 500)
+pp_check(
+  full_model, type = 'stat', stat = 'max', nsamples = 500, 
+  newdata = filter(d, Number != 4))
+
+pp_check(
+  full_model, type = 'stat', stat = 'max', nsamples = 500, 
+  newdata = filter(d, Number != 4))
+
+
+# Comparsion 2: Model that excluded 4
+#               Model that had regularizing prior
+full_model_exclude <- readRDS('full_model_exclude.rds')
+pp_check(
+  full_model_exclude, type = 'stat', stat = 'max', nsamples = 500)
+
+pp_check(
+  full_model_exclude, type = 'stat', stat = 'mean', nsamples = 500)
+
+
+# included prior
+hist(rnorm(n = 500, mean = 0.5, sd = 3))
+full_model_prior <- readRDS('full_model_prior.rds')
+pp_check(
+  full_model_prior, type = 'stat', stat = 'max', nsamples = 500)
+
+pp_check(
+  full_model_prior, type = 'stat', stat = 'mean', nsamples = 500)
+
+
+## use pp_checks on new data
+library(bayesplot)
+d %>%
+  data_grid(
+    Number = 100, 
+    periodized,
+    outcome_type = 1,
+    linear = 1,
+    undulating = 0,
+    block = 0,
+    trained = 1,
+    standard_error = mean(d$standard_error)
+    ) %>%
+  add_predicted_samples(
+    full_model, 
+    n = 500,
+    allow_new_levels = TRUE) %>%
+  group_by(.iteration) %>%
+  summarise(mean = mean(pred)) %>%
+  ggplot() +
+  geom_histogram(aes(x = mean)) +
+  geom_vline(xintercept = mean(d$effect_size))
+
+d %>%
+  data_grid(
+    Number = 100, 
+    periodized,
+    outcome_type = 1,
+    linear = 1,
+    undulating = 0,
+    block = 0,
+    trained = 1,
+    standard_error = mean(d$standard_error),
+    effect_size = mean(effect_size)
+  ) %>%
+  pp_check(
+    full_model, type = 'stat', stat = 'mean',
+    nsamples = 500, allow_new_levels = TRUE, newdata = .)
+
+# change number to 100
+d %>%
+  mutate(Number = 100) %>%
+  pp_check(
+    full_model, type = 'stat', stat = 'mean', 
+    nsamples = 500, allow_new_levels = TRUE, newdata = .)
+
+
+
+## auto vs. manual ppc check
+# I can the same results
+pp_check(
+  full_model, type = 'stat', stat = 'mean', 
+  nsamples = 500)
+
+d %>% 
+  add_predicted_samples(
+    full_model, 
+    n = 500) %>%
+  group_by(.iteration) %>%
+  summarise(mean = mean(pred)) %>%
+  ggplot() +
+  geom_histogram(aes(x = mean)) +
+  geom_vline(xintercept = mean(d$effect_size))
+  
+
+# How does the inclusion of varying SE change distribution?
+# It doesn't appear to
+d %>%
+  data_grid(
+    Number = 100, 
+    periodized,
+    outcome_type,
+    linear,
+    undulating,
+    block,
+    trained,
+    standard_error = seq_range(standard_error, n = 50),
+    effect_size = mean(effect_size)
+  ) %>%
+  pp_check(
+    full_model, type = 'stat', stat = 'mean',
+    nsamples = 500, allow_new_levels = TRUE, newdata = .)
+
+
+
+# min models over group variation vs. within group
+new_data <- d %>%
+  data_grid(
+    Number = 100, 
+    periodized,
+    outcome_type,
+    linear,
+    undulating,
+    block,
+    trained,
+    standard_error = seq_range(standard_error, n = 50)
+  )
+
+new_data %>%
+  mutate(effect_size = min(d$effect_size)) %>%
+  pp_check(
+    full_model, type = 'stat', stat = 'min',
+    nsamples = 500, allow_new_levels = TRUE, newdata = .)
+
+pp_check(
+  full_model, type = 'stat', stat = 'min',
+  nsamples = 500, newdata = d)
+
+# max
+new_data %>%
+  mutate(effect_size = max(d$effect_size)) %>%
+  pp_check(
+    full_model, type = 'stat', stat = 'max',
+    nsamples = 500, allow_new_levels = TRUE, newdata = .)
+
+pp_check(
+  full_model, type = 'stat', stat = 'max',
+  nsamples = 500, newdata = d)
+
+
+
+
+
+
+
+
+
+
+
+
+
