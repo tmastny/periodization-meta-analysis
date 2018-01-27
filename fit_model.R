@@ -27,10 +27,10 @@ saveRDS(exercise_model, 'exercise_model.rds')
 ## ---- full_model ----
 full_model <- brm(
   effect_size | se(standard_error) ~ 
-  1 + (1 | Number) + (1 | outcome_type) + 
-  (1 | periodized) + (1 | linear) + (1 | undulating) + (1 | block) +
-  (1 | trained), data = d, iter = 8000, warmup = 4000, 
-  control = list(adapt_delta = 0.96)) 
+  1 + (1 | Number) + (1 | outcome_type) + (1 | periodized) + 
+  (1 | linear) + (1 | undulating) + (1 | block) + (1 | trained), 
+  data = d, iter = 8000, warmup = 4000, control = list(adapt_delta = 0.96)
+) 
 
 ## ---- save_full ----
 
